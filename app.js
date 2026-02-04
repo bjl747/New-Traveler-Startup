@@ -40,10 +40,19 @@ const logoutBtn = document.getElementById('logout-btn');
 let currentUser = null;
 let userDocRef = null;
 
+// Debug Logger
+function logToScreen(msg) {
+    const logDiv = document.getElementById('debug-log');
+    if (logDiv) {
+        logDiv.style.display = 'block';
+        logDiv.innerHTML += `<div>${new Date().toLocaleTimeString()} - ${msg}</div>`;
+    }
+    console.log(msg);
+}
+
 // Auth Listener
 auth.onAuthStateChanged(async (user) => {
-    // DEBUG: Remove after fixing
-    alert("Auth State: " + (user ? user.email : "No User"));
+    logToScreen("Auth State Changed: " + (user ? user.email : "No User"));
 
     if (user) {
         currentUser = user;
