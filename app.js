@@ -310,9 +310,38 @@ const completionModal = document.getElementById('completion-modal');
 const closeModalSpan = document.querySelector('.close-modal');
 const modalOkBtn = document.getElementById('modal-ok-btn');
 
-function checkCompletion(data) {
+// Flag to prevent double notification if page is reloaded? 
+// Current logic checks every time, but email spam might be an issue.
+// For now, simpler is better, but maybe check if we already sent? 
+// Better: Database should have a 'notified' flag. 
+// For this iteration, let's just send it. Or verify if the 'completed' modal is shown for the first time.
+
+async function checkCompletion(data) {
     if (data.step1_completed && data.step2_completed && data.step3_completed) {
         if (completionModal) completionModal.classList.remove('hidden');
+
+        // Send Email Notification (Only if not already sent check? 
+        // We will just send it for now, user can manage duplicates)
+        // Ideally we'd add a 'notified: true' field to DB.
+        if (!data.completion_notified) {
+            await sendCompletionNotification(currentUser.displayName);
+        }
+    }
+}
+
+async function sendCompletionNotification(name) {
+    try {
+        await fetch(GAS_ENDPOINT, {
+            method: "POST",
+            body: JSON.stringify({
+                action: "NOTIFY_COMPLETION",
+                userName: name
+            })
+        });
+        // Mark as notified so we don't spam on refresh
+        await userDocRef.update({ completion_notified: true });
+    } catch (e) {
+        console.error("Failed to send notification:", e);
     }
 }
 
