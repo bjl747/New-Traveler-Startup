@@ -43,7 +43,7 @@ let userDocRef = null;
 // Auth Listener
 auth.onAuthStateChanged(async (user) => {
     // DEBUG: Remove after fixing
-    // alert("Auth State: " + (user ? user.email : "No User"));
+    alert("Auth State: " + (user ? user.email : "No User"));
 
     if (user) {
         currentUser = user;
@@ -69,9 +69,9 @@ auth.onAuthStateChanged(async (user) => {
 auth.getRedirectResult()
     .then((result) => {
         // DEBUG: Remove after fixing
-        // alert("Redirect Result Checked");
+        alert("Redirect Result Checked");
         if (result.user) {
-            // alert("User returned from Redirect: " + result.user.email);
+            alert("User returned from Redirect: " + result.user.email);
             console.log("Redirect login success");
         }
     })
