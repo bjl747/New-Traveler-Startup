@@ -56,13 +56,22 @@ auth.onAuthStateChanged(async (user) => {
     }
 });
 
+// Check for Redirect Result (for mobile flow)
+auth.getRedirectResult()
+    .then((result) => {
+        if (result.user) {
+            console.log("Redirect login success");
+        }
+    })
+    .catch((error) => {
+        console.error("Redirect login failed:", error);
+        alert("Login failed: " + error.message);
+    });
+
 // Login
 googleLoginBtn.addEventListener('click', () => {
     const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).catch(error => {
-        console.error("Login failed:", error);
-        alert("Login failed: " + error.message);
-    });
+    auth.signInWithRedirect(provider);
 });
 
 // Logout
@@ -171,7 +180,7 @@ uploadBtn.addEventListener('click', async () => {
         await markStepComplete(1);
     } catch (error) {
         console.error(error);
-        feedback.textContent = "Upload failed. Please try again.";
+        feedback.textContent = "Upload failed: " + (error.message || error);
         feedback.className = "feedback-msg error";
         uploadBtn.disabled = false;
     }
@@ -205,7 +214,7 @@ function uploadFileToGAS(file) {
                     if (data.status === 'success') resolve(data);
                     else reject(data.message);
                 })
-                .catch(err => reject(err));
+                .catch(err => reject("Network/GAS Error: " + err.toString()));
         };
         reader.onerror = error => reject(error);
     });
