@@ -65,25 +65,18 @@ auth.onAuthStateChanged(async (user) => {
     }
 });
 
-// Check for Redirect Result (for mobile flow)
-auth.getRedirectResult()
-    .then((result) => {
-        // DEBUG: Remove after fixing
-        alert("Redirect Result Checked");
-        if (result.user) {
-            alert("User returned from Redirect: " + result.user.email);
-            console.log("Redirect login success");
-        }
-    })
-    .catch((error) => {
-        console.error("Redirect login failed:", error);
-        alert("Redirect Error: " + error.message);
-    });
-
 // Login
 googleLoginBtn.addEventListener('click', () => {
+    logToScreen("Starting Sign In with Popup...");
     const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithRedirect(provider);
+    auth.signInWithPopup(provider)
+        .then((result) => {
+            logToScreen("Popup Success: " + result.user.email);
+        })
+        .catch((error) => {
+            logToScreen("Popup Error: " + error.message);
+            alert("Login Failed: " + error.message);
+        });
 });
 
 // Logout
