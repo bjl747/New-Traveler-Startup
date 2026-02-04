@@ -22,6 +22,12 @@ try {
 const auth = firebase.auth();
 const db = firebase.firestore();
 
+// Ensure persistence is set to LOCAL
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+    .catch((error) => {
+        console.error("Persistence Error:", error);
+    });
+
 // DOM Elements
 const loginSection = document.getElementById('login-section');
 const dashboardSection = document.getElementById('dashboard-section');
