@@ -137,11 +137,12 @@ const uploadBtn = document.getElementById('upload-btn');
 uploadBtn.addEventListener('click', async () => {
     const resumeFile = document.getElementById('resume-upload').files[0];
     const blsFile = document.getElementById('bls-upload').files[0];
+    const idFiles = document.getElementById('id-upload').files;
     const certFiles = document.getElementById('certs-upload').files;
     const feedback = document.getElementById('upload-feedback');
 
-    if (!resumeFile || !blsFile) {
-        feedback.textContent = "Please upload both Resume and BLS Certification.";
+    if (!resumeFile || !blsFile || idFiles.length === 0) {
+        feedback.textContent = "Please upload Resume, BLS, and Forms of ID.";
         feedback.className = "feedback-msg error";
         return;
     }
@@ -151,16 +152,19 @@ uploadBtn.addEventListener('click', async () => {
     uploadBtn.disabled = true;
 
     try {
-        // Parallel Uploads
-        const uploads = [];
-        uploads.push(uploadFileToGAS(resumeFile));
-        uploads.push(uploadFileToGAS(blsFile));
+        // Sequential Uploads to ensure folder creation consistency
+        // (Parallel uploads caused duplicate folders)
 
-        for (let i = 0; i < certFiles.length; i++) {
-            uploads.push(uploadFileToGAS(certFiles[i]));
+        await uploadFileToGAS(resumeFile);
+        await uploadFileToGAS(blsFile);
+
+        for (let i = 0; i < idFiles.length; i++) {
+            await uploadFileToGAS(idFiles[i]);
         }
 
-        await Promise.all(uploads);
+        for (let i = 0; i < certFiles.length; i++) {
+            await uploadFileToGAS(certFiles[i]);
+        }
 
         feedback.textContent = "All files uploaded successfully!";
         feedback.className = "feedback-msg success";

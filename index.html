@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Traveler Onboarding | Prime Time Healthcare</title>
+    <title>Traveler Startup Dashboard | Prime Time Healthcare</title>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <!-- CSS -->
@@ -11,6 +12,7 @@
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
 
     <!-- Header -->
@@ -26,11 +28,11 @@
 
     <!-- Main Content -->
     <main class="container">
-        
+
         <!-- Login Section -->
         <section id="login-section" class="card fade-in">
             <div class="login-content">
-                <h1>Traveler Onboarding</h1>
+                <h1>Traveler Startup Dashboard</h1>
                 <p>Welcome! Please sign in to access your onboarding tasks.</p>
                 <button id="google-login-btn" class="btn btn-primary btn-lg">
                     <i class="fab fa-google"></i> Sign in with Google
@@ -58,8 +60,9 @@
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </div>
                 <div class="step-content">
-                    <p class="instructions">Please upload your Resume and standard Certifications (PDF or Image files).</p>
-                    
+                    <p class="instructions">Please upload your Resume and standard Certifications (PDF or Image files).
+                    </p>
+
                     <div class="upload-group">
                         <label>Resume (Required)</label>
                         <input type="file" id="resume-upload" accept=".pdf,.doc,.docx,.jpg,.png">
@@ -70,6 +73,13 @@
                         <label>BLS Certification (Required)</label>
                         <input type="file" id="bls-upload" accept=".pdf,.doc,.docx,.jpg,.png">
                         <div class="file-status hidden" id="bls-status"></div>
+                    </div>
+
+                    <div class="upload-group">
+                        <label>Two Forms of ID (Front & Back of Driver's License AND Social Security Card/Passport)
+                            *</label>
+                        <input type="file" id="id-upload" accept=".pdf,.doc,.docx,.jpg,.png" multiple>
+                        <div class="file-status hidden" id="id-status"></div>
                     </div>
 
                     <div class="upload-group">
@@ -93,8 +103,9 @@
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </div>
                 <div class="step-content">
-                    <p class="instructions">Provide TWO references (Manager, Lead, or Charge Nurse) from the last 12 months.</p>
-                    
+                    <p class="instructions">Provide TWO references (Manager, Lead, or Charge Nurse) from the last 12
+                        months.</p>
+
                     <form id="reference-form">
                         <!-- Reference 1 -->
                         <div class="ref-block">
@@ -129,7 +140,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <hr>
 
                         <!-- Reference 2 -->
@@ -184,9 +195,10 @@
                 <div class="step-content">
                     <div class="info-box">
                         <i class="fas fa-info-circle"></i>
-                        <p>Search your email for <strong>'Prime Time Healthcare HSH Testing'</strong> (check spam if missing). If not found, contact your recruiter immediately.</p>
+                        <p>Search your email for <strong>'Prime Time Healthcare HSH Testing'</strong> (check spam if
+                            missing). If not found, contact your recruiter immediately.</p>
                     </div>
-                    
+
                     <div class="checkbox-confirm">
                         <label class="custom-checkbox">
                             <input type="checkbox" id="hsh-confirm">
@@ -207,7 +219,7 @@
 
     <!-- App Logic -->
     <script src="app.js"></script>
-    
+
     <script>
         // Simple UI Toggle Logic for Accordion (Moved to app.js later but good for basic function)
         function toggleStep(stepNum) {
@@ -228,4 +240,5 @@
         }
     </script>
 </body>
+
 </html>

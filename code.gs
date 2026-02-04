@@ -7,10 +7,10 @@
  * 3. Deploy as a Web App:
  *    - Click "Deploy" -> "New deployment"
  *    - Select type "Web app"
- *    - Description: "v1"
+ *    - Description: "v2"
  *    - Execute as: "Me" (your account)
- *    - Who has access: "Anyone" (IMPORTANT for the app to work without Google login prompt)
- * 4. Copy the Web App URL and paste it into `app.js` in the `GAS_ENDPOINT` constant.
+ *    - Who has access: "Anyone"
+ * 4. Update the GAS_ENDPOINT in app.js if the URL changes (updates usually keep the same URL if done correctly as 'New Version').
  */
 
 // CONFIGURATION
@@ -18,27 +18,43 @@ const RECIPIENT_EMAIL = "blayher@primetimehealthcare.com";
 const ROOT_FOLDER_NAME = "Traveler Onboarding Uploads";
 
 function doPost(e) {
+  // Lock to prevent race conditions during folder creation
+  const lock = LockService.getScriptLock();
+  try {
+    // Wait for up to 30 seconds for other processes to finish.
+    lock.waitLock(30000); 
+  } catch (e) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: "error", message: "Server busy, please try again." }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
   try {
     const data = JSON.parse(e.postData.contents);
     const action = data.action;
 
+    let result;
     if (action === "UPLOAD_FILE") {
-      return handleFileUpload(data);
+      result = handleFileUpload(data);
     } else if (action === "SUBMIT_REFERENCES") {
-      return handleReferenceSubmission(data);
+      result = handleReferenceSubmission(data);
     } else {
       throw new Error("Invalid action: " + action);
     }
+    
+    return result;
 
   } catch (error) {
     return ContentService
       .createTextOutput(JSON.stringify({ status: "error", message: error.toString() }))
       .setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    lock.releaseLock();
   }
 }
 
 function handleFileUpload(data) {
-  const { fileName, fileData, mimeType, userName } = data; // userName should be "First Last"
+  const { fileName, fileData, mimeType, userName } = data;
 
   // 1. Get or Create Root Folder
   let rootFolder;
@@ -49,7 +65,7 @@ function handleFileUpload(data) {
     rootFolder = DriveApp.createFolder(ROOT_FOLDER_NAME);
   }
 
-  // 2. Get or Create User Subfolder
+  // 2. Get or Create User Subfolder inside Root
   let userFolder;
   const userFolders = rootFolder.getFoldersByName(userName);
   if (userFolders.hasNext()) {
@@ -73,7 +89,7 @@ function handleFileUpload(data) {
 }
 
 function handleReferenceSubmission(data) {
-  const { userName, references } = data; // references is an array of 2 reference objects
+  const { userName, references } = data; 
 
   let emailBody = `
     <h2>New Reference Submission</h2>
