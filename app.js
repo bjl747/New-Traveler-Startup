@@ -42,6 +42,9 @@ let userDocRef = null;
 
 // Auth Listener
 auth.onAuthStateChanged(async (user) => {
+    // DEBUG: Remove after fixing
+    // alert("Auth State: " + (user ? user.email : "No User"));
+
     if (user) {
         currentUser = user;
         userDocRef = db.collection('travelers').doc(user.uid);
@@ -65,13 +68,16 @@ auth.onAuthStateChanged(async (user) => {
 // Check for Redirect Result (for mobile flow)
 auth.getRedirectResult()
     .then((result) => {
+        // DEBUG: Remove after fixing
+        // alert("Redirect Result Checked");
         if (result.user) {
+            // alert("User returned from Redirect: " + result.user.email);
             console.log("Redirect login success");
         }
     })
     .catch((error) => {
         console.error("Redirect login failed:", error);
-        alert("Login failed: " + error.message);
+        alert("Redirect Error: " + error.message);
     });
 
 // Login
