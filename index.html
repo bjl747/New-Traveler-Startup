@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traveler Onboarding | Prime Time Healthcare</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="app-header">
+        <div class="container">
+            <img src="PTH Logo.png" alt="Prime Time Healthcare Logo" class="logo">
+            <div id="user-info" class="hidden">
+                <span id="user-name"></span>
+                <button id="logout-btn" class="btn btn-outline">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        
+        <!-- Login Section -->
+        <section id="login-section" class="card fade-in">
+            <div class="login-content">
+                <h1>Traveler Onboarding</h1>
+                <p>Welcome! Please sign in to access your onboarding tasks.</p>
+                <button id="google-login-btn" class="btn btn-primary btn-lg">
+                    <i class="fab fa-google"></i> Sign in with Google
+                </button>
+            </div>
+        </section>
+
+        <!-- Dashboard Section (Hidden by default) -->
+        <section id="dashboard-section" class="hidden fade-in">
+            <div class="dashboard-header">
+                <h2>Onboarding Checklist</h2>
+                <div class="progress-bar-container">
+                    <div id="progress-fill" class="progress-fill" style="width: 0%;"></div>
+                </div>
+                <p class="progress-text"><span id="completed-count">0</span>/3 Steps Completed</p>
+            </div>
+
+            <!-- Step 1: Documents -->
+            <div class="step-card" id="step-1">
+                <div class="step-header" onclick="toggleStep(1)">
+                    <div class="step-title">
+                        <div class="status-icon"><i class="far fa-circle"></i></div>
+                        <h3>Step 1: Document Upload</h3>
+                    </div>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="step-content">
+                    <p class="instructions">Please upload your Resume and standard Certifications (PDF or Image files).</p>
+                    
+                    <div class="upload-group">
+                        <label>Resume (Required)</label>
+                        <input type="file" id="resume-upload" accept=".pdf,.doc,.docx,.jpg,.png">
+                        <div class="file-status hidden" id="resume-status"></div>
+                    </div>
+
+                    <div class="upload-group">
+                        <label>BLS Certification (Required)</label>
+                        <input type="file" id="bls-upload" accept=".pdf,.doc,.docx,.jpg,.png">
+                        <div class="file-status hidden" id="bls-status"></div>
+                    </div>
+
+                    <div class="upload-group">
+                        <label>Additional Certs (ACLS, PALS, NRP - Optional)</label>
+                        <input type="file" id="certs-upload" accept=".pdf,.doc,.docx,.jpg,.png" multiple>
+                        <div class="file-status hidden" id="certs-status"></div>
+                    </div>
+
+                    <button id="upload-btn" class="btn btn-primary">Upload Documents</button>
+                    <p id="upload-feedback" class="feedback-msg"></p>
+                </div>
+            </div>
+
+            <!-- Step 2: References -->
+            <div class="step-card" id="step-2">
+                <div class="step-header" onclick="toggleStep(2)">
+                    <div class="step-title">
+                        <div class="status-icon"><i class="far fa-circle"></i></div>
+                        <h3>Step 2: References</h3>
+                    </div>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="step-content">
+                    <p class="instructions">Provide TWO references (Manager, Lead, or Charge Nurse) from the last 12 months.</p>
+                    
+                    <form id="reference-form">
+                        <!-- Reference 1 -->
+                        <div class="ref-block">
+                            <h4>Reference #1</h4>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Full Name *</label>
+                                    <input type="text" id="ref1-name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Title *</label>
+                                    <select id="ref1-title" required>
+                                        <option value="">Select Title</option>
+                                        <option value="Manager">Manager</option>
+                                        <option value="Charge Nurse">Charge Nurse</option>
+                                        <option value="Supervisor">Supervisor</option>
+                                        <option value="Lead">Lead</option>
+                                        <option value="Director">Director</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Facility Name *</label>
+                                    <input type="text" id="ref1-facility" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone (Cell Preferred) *</label>
+                                    <input type="tel" id="ref1-phone" required placeholder="(555) 555-5555">
+                                </div>
+                                <div class="form-group">
+                                    <label>Email (Optional)</label>
+                                    <input type="email" id="ref1-email">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr>
+
+                        <!-- Reference 2 -->
+                        <div class="ref-block">
+                            <h4>Reference #2</h4>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Full Name *</label>
+                                    <input type="text" id="ref2-name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Title *</label>
+                                    <select id="ref2-title" required>
+                                        <option value="">Select Title</option>
+                                        <option value="Manager">Manager</option>
+                                        <option value="Charge Nurse">Charge Nurse</option>
+                                        <option value="Supervisor">Supervisor</option>
+                                        <option value="Lead">Lead</option>
+                                        <option value="Director">Director</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Facility Name *</label>
+                                    <input type="text" id="ref2-facility" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone (Cell Preferred) *</label>
+                                    <input type="tel" id="ref2-phone" required placeholder="(555) 555-5555">
+                                </div>
+                                <div class="form-group">
+                                    <label>Email (Optional)</label>
+                                    <input type="email" id="ref2-email">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" id="ref-submit-btn">Submit References</button>
+                        <p id="ref-feedback" class="feedback-msg"></p>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Step 3: HSH Testing -->
+            <div class="step-card" id="step-3">
+                <div class="step-header" onclick="toggleStep(3)">
+                    <div class="step-title">
+                        <div class="status-icon"><i class="far fa-circle"></i></div>
+                        <h3>Step 3: HSH Testing</h3>
+                    </div>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="step-content">
+                    <div class="info-box">
+                        <i class="fas fa-info-circle"></i>
+                        <p>Search your email for <strong>'Prime Time Healthcare HSH Testing'</strong> (check spam if missing). If not found, contact your recruiter immediately.</p>
+                    </div>
+                    
+                    <div class="checkbox-confirm">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" id="hsh-confirm">
+                            <span class="checkmark"></span>
+                            I have completed the emailed Skills Checklist.
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <!-- App Logic -->
+    <script src="app.js"></script>
+    
+    <script>
+        // Simple UI Toggle Logic for Accordion (Moved to app.js later but good for basic function)
+        function toggleStep(stepNum) {
+            // Find the step card
+            const stepCard = document.getElementById(`step-${stepNum}`);
+            const content = stepCard.querySelector('.step-content');
+            const icon = stepCard.querySelector('.toggle-icon');
+
+            // Close others (optional, keeps it clean)
+            // document.querySelectorAll('.step-card').forEach(card => {
+            //     if(card !== stepCard) {
+            //         card.classList.remove('active');
+            //     }
+            // });
+
+            // Toggle current
+            stepCard.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
