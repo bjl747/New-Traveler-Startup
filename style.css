@@ -4,7 +4,8 @@
 */
 
 :root {
-    --primary-color: #005696; /* Prime Time Blue */
+    --primary-color: #005696;
+    /* Prime Time Blue */
     --primary-hover: #004478;
     --text-color: #333333;
     --bg-color: #F4F6F9;
@@ -29,14 +30,24 @@ body {
 }
 
 /* Utilities */
-.hidden { display: none !important; }
-.container { max-width: 800px; margin: 0 auto; padding: 0 20px; }
-.text-center { text-align: center; }
+.hidden {
+    display: none !important;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.text-center {
+    text-align: center;
+}
 
 /* Header */
 .app-header {
     background: #FFFFFF;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 15px 0;
     position: sticky;
     top: 0;
@@ -100,7 +111,7 @@ body {
 section.card {
     background: var(--card-bg);
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     margin: 30px 0;
     padding: 30px;
     border: 1px solid var(--border-color);
@@ -156,7 +167,7 @@ section.card {
 .step-card {
     background: var(--card-bg);
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     margin-bottom: 20px;
     overflow: hidden;
     border: 1px solid var(--border-color);
@@ -164,7 +175,7 @@ section.card {
 }
 
 .step-card.active {
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     border-color: var(--primary-color);
 }
 
@@ -173,7 +184,8 @@ section.card {
 }
 
 .step-card.completed .status-icon i::before {
-    content: "\f058"; /* Check-circle */
+    content: "\f058";
+    /* Check-circle */
 }
 
 .step-header {
@@ -222,7 +234,8 @@ section.card {
 
 .step-card.active .step-content {
     padding: 20px;
-    max-height: 2000px; /* Arbitrary large height */
+    max-height: 2000px;
+    /* Arbitrary large height */
     overflow: visible;
 }
 
@@ -236,7 +249,8 @@ section.card {
     border-radius: 4px;
 }
 
-.upload-group, .form-group {
+.upload-group,
+.form-group {
     margin-bottom: 20px;
 }
 
@@ -326,11 +340,11 @@ input[type="file"] {
     border-radius: 4px;
 }
 
-.custom-checkbox:hover input ~ .checkmark {
+.custom-checkbox:hover input~.checkmark {
     background-color: #ccc;
 }
 
-.custom-checkbox input:checked ~ .checkmark {
+.custom-checkbox input:checked~.checkmark {
     background-color: var(--primary-color);
 }
 
@@ -340,7 +354,7 @@ input[type="file"] {
     display: none;
 }
 
-.custom-checkbox input:checked ~ .checkmark:after {
+.custom-checkbox input:checked~.checkmark:after {
     display: block;
 }
 
@@ -360,8 +374,14 @@ input[type="file"] {
     font-size: 0.9rem;
     font-weight: 500;
 }
-.feedback-msg.error { color: var(--error-color); }
-.feedback-msg.success { color: var(--success-color); }
+
+.feedback-msg.error {
+    color: var(--error-color);
+}
+
+.feedback-msg.success {
+    color: var(--success-color);
+}
 
 .file-status {
     margin-top: 5px;
@@ -375,6 +395,88 @@ input[type="file"] {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Completion Modal */
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.modal-icon {
+    font-size: 3rem;
+    color: #4CAF50;
+    margin-bottom: 15px;
+}
+
+.modal h2 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.modal p {
+    color: #555;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #999;
+}
+
+.close-modal:hover {
+    color: #333;
+}
+
+.primary-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.primary-btn:hover {
+    background-color: var(--secondary-color);
 }

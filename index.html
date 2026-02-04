@@ -211,11 +211,19 @@
 
         </section>
 
-        <div id="debug-log"
-            style="margin-top: 20px; padding: 10px; background: #eee; border: 1px solid #ccc; font-family: monospace; font-size: 0.8rem; display: none;">
-            <strong>Debug Log:</strong><br>
-        </div>
+
     </main>
+
+    <!-- Completion Modal -->
+    <div id="completion-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-icon"><i class="fas fa-check-circle"></i></div>
+            <h2>All Set!</h2>
+            <p>Your Recruiter will get your profile completed ASAP and contact you to talk jobs.</p>
+            <button id="modal-ok-btn" class="primary-btn">Awesome!</button>
+        </div>
+    </div>
 
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>

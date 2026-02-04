@@ -40,19 +40,9 @@ const logoutBtn = document.getElementById('logout-btn');
 let currentUser = null;
 let userDocRef = null;
 
-// Debug Logger
-function logToScreen(msg) {
-    const logDiv = document.getElementById('debug-log');
-    if (logDiv) {
-        logDiv.style.display = 'block';
-        logDiv.innerHTML += `<div>${new Date().toLocaleTimeString()} - ${msg}</div>`;
-    }
-    console.log(msg);
-}
-
 // Auth Listener
 auth.onAuthStateChanged(async (user) => {
-    logToScreen("Auth State Changed: " + (user ? user.email : "No User"));
+    console.log("Auth State Changed: " + (user ? user.email : "No User"));
 
     if (user) {
         currentUser = user;
@@ -76,14 +66,10 @@ auth.onAuthStateChanged(async (user) => {
 
 // Login
 googleLoginBtn.addEventListener('click', () => {
-    logToScreen("Starting Sign In with Popup...");
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider)
-        .then((result) => {
-            logToScreen("Popup Success: " + result.user.email);
-        })
         .catch((error) => {
-            logToScreen("Popup Error: " + error.message);
+            console.error("Login Failed:", error);
             alert("Login Failed: " + error.message);
         });
 });
@@ -108,6 +94,8 @@ async function loadUserProgress() {
             if (data.step3_completed) {
                 document.getElementById('hsh-confirm').checked = true;
             }
+            // Check for full completion
+            checkCompletion(data);
         } else {
             // New User - Create Doc
             await userDocRef.set({
@@ -151,6 +139,12 @@ async function markStepComplete(stepNum) {
     updateData[`step${stepNum}_completed`] = true;
 
     await userDocRef.update(updateData);
+
+    // Verify if all steps are done to show popup
+    const freshDoc = await userDocRef.get();
+    if (freshDoc.exists) {
+        checkCompletion(freshDoc.data());
+    }
 }
 
 // --- STEP 1: UPLOAD LOGIC ---
@@ -307,7 +301,35 @@ hshCheckbox.addEventListener('change', async (e) => {
         // Optional: Allow unchecking? Usually once done it's done, but for UX let's allow toggle off
         // But logic requires DB update
         updateStepUI(3, false);
-        updateProgressBar();
         await userDocRef.update({ step3_completed: false });
+    }
+});
+
+// --- POPUP LOGIC ---
+const completionModal = document.getElementById('completion-modal');
+const closeModalSpan = document.querySelector('.close-modal');
+const modalOkBtn = document.getElementById('modal-ok-btn');
+
+function checkCompletion(data) {
+    if (data.step1_completed && data.step2_completed && data.step3_completed) {
+        if (completionModal) completionModal.classList.remove('hidden');
+    }
+}
+
+if (closeModalSpan) {
+    closeModalSpan.addEventListener('click', () => {
+        completionModal.classList.add('hidden');
+    });
+}
+
+if (modalOkBtn) {
+    modalOkBtn.addEventListener('click', () => {
+        completionModal.classList.add('hidden');
+    });
+}
+
+window.addEventListener('click', (e) => {
+    if (e.target == completionModal) {
+        completionModal.classList.add('hidden');
     }
 });
