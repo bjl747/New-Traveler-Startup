@@ -7,7 +7,7 @@
  * 3. Deploy as a Web App:
  *    - Click "Deploy" -> "New deployment"
  *    - Select type "Web app"
- *    - Description: "v2"
+ *    - Description: "v3" (Updated)
  *    - Execute as: "Me" (your account)
  *    - Who has access: "Anyone"
  * 4. Update the GAS_ENDPOINT in app.js if the URL changes (updates usually keep the same URL if done correctly as 'New Version').
@@ -38,6 +38,10 @@ function doPost(e) {
       result = handleFileUpload(data);
     } else if (action === "SUBMIT_REFERENCES") {
       result = handleReferenceSubmission(data);
+    } else if (action === "NOTIFY_COMPLETION") {
+      result = handleCompletionNotification(data);
+    } else if (action === "NOTIFY_UPLOAD_STEP_COMPLETE") {
+      result = handleUploadStepCompletion(data);
     } else {
       throw new Error("Invalid action: " + action);
     }
@@ -122,5 +126,74 @@ function handleReferenceSubmission(data) {
       status: "success", 
       message: "References submitted and email sent." 
     }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function handleCompletionNotification(data) {
+  const { userName } = data;
+  
+  // 1. Get Root Folder
+  const folders = DriveApp.getFoldersByName(ROOT_FOLDER_NAME);
+  let rootFolder;
+  if (folders.hasNext()) {
+    rootFolder = folders.next();
+  } else {
+    // Should exist if files were just uploaded, but safety check
+    rootFolder = DriveApp.createFolder(ROOT_FOLDER_NAME);
+  }
+  
+  // 2. Get User Subfolder
+  const userFolders = rootFolder.getFoldersByName(userName);
+  let userFolderUrl = "Folder not found - check Google Drive manually";
+  if (userFolders.hasNext()) {
+    userFolderUrl = userFolders.next().getUrl();
+  }
+  
+  const completionSubject = `COMPLETED: Traveler Onboarding - ${userName}`;
+  const completionBody = `
+    Good news!
+    
+    ${userName} has completed all 3 steps of the onboarding process:
+    1. Document Upload (Resume, BLS, ID, Certs)
+    2. References Submitted
+    3. HSH Testing Checklist Confirmed
+    
+    Access their documents folder here:
+    ${userFolderUrl}
+    
+    Please review their folder in Google Drive and contact them to talk jobs.
+  `;
+  
+  MailApp.sendEmail({
+    to: RECIPIENT_EMAIL,
+    subject: completionSubject,
+    body: completionBody
+  });
+  
+  
+  return ContentService.createTextOutput(JSON.stringify({ status: 'success' }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function handleUploadStepCompletion(data) {
+  const { userName } = data;
+  
+  // Simple notification - removed folder lookup
+  const subject = `DOCS UPLOADED: Traveler Onboarding - ${userName}`;
+  const body = `
+    ${userName} has just uploaded their initial documents (Resume, ID, etc.).
+    
+    They have correctly completed Step 1.
+    
+    You will receive a final email with the folder link once they complete all steps.
+  `;
+  
+  MailApp.sendEmail({
+    to: RECIPIENT_EMAIL,
+    subject: subject,
+    body: body
+  });
+  
+  return ContentService.createTextOutput(JSON.stringify({ status: 'success', message: 'Notification sent' }))
     .setMimeType(ContentService.MimeType.JSON);
 }

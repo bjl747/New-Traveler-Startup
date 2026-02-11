@@ -186,6 +186,10 @@ uploadBtn.addEventListener('click', async () => {
         feedback.textContent = "All files uploaded successfully!";
         feedback.className = "feedback-msg success";
         await markStepComplete(1);
+
+        // Notify Admin with Folder Link
+        await sendUploadNotification(currentUser.displayName);
+
     } catch (error) {
         console.error(error);
         feedback.textContent = "Upload failed: " + (error.message || error);
@@ -226,6 +230,17 @@ function uploadFileToGAS(file) {
         };
         reader.onerror = error => reject(error);
     });
+}
+
+function sendUploadNotification(name) {
+    // Best effort - triggers email with folder link
+    fetch(GAS_ENDPOINT, {
+        method: "POST",
+        body: JSON.stringify({
+            action: "NOTIFY_UPLOAD_STEP_COMPLETE",
+            userName: name
+        })
+    }).catch(e => console.error("Failed to send upload notification", e));
 }
 
 
@@ -320,6 +335,11 @@ async function checkCompletion(data) {
     if (data.step1_completed && data.step2_completed && data.step3_completed) {
         if (completionModal) completionModal.classList.remove('hidden');
 
+        // Start 5-minute timer to auto-logout/reset for next user
+        setTimeout(() => {
+            auth.signOut().then(() => location.reload());
+        }, 300000); // 300,000 ms = 5 minutes
+
         // Send Email Notification (Only if not already sent check? 
         // We will just send it for now, user can manage duplicates)
         // Ideally we'd add a 'notified: true' field to DB.
@@ -354,6 +374,13 @@ if (closeModalSpan) {
 if (modalOkBtn) {
     modalOkBtn.addEventListener('click', () => {
         completionModal.classList.add('hidden');
+    });
+}
+
+const modalResetBtn = document.getElementById('modal-reset-btn');
+if (modalResetBtn) {
+    modalResetBtn.addEventListener('click', () => {
+        auth.signOut().then(() => location.reload());
     });
 }
 
