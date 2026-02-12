@@ -58,7 +58,7 @@ function doPost(e) {
 }
 
 function handleFileUpload(data) {
-  const { fileName, fileData, mimeType, userName } = data;
+  const { fileName, fileData, mimeType, userName, documentType } = data;
 
   // 1. Get or Create Root Folder
   let rootFolder;
@@ -78,15 +78,27 @@ function handleFileUpload(data) {
     userFolder = rootFolder.createFolder(userName);
   }
 
-  // 3. Decode and Save File
+  // 3. Generate formatted date (M.D.YYYY)
+  const uploadDate = new Date();
+  const month = uploadDate.getMonth() + 1; // Months are 0-indexed
+  const day = uploadDate.getDate();
+  const year = uploadDate.getFullYear();
+  const formattedDate = `${month}.${day}.${year}`;
+
+  // 4. Create new filename with document type and date
+  const fileExtension = fileName.split('.').pop();
+  const newFileName = `${documentType} - ${formattedDate}.${fileExtension}`;
+
+  // 5. Decode and Save File with new name
   const decodedData = Utilities.base64Decode(fileData);
-  const blob = Utilities.newBlob(decodedData, mimeType, fileName);
+  const blob = Utilities.newBlob(decodedData, mimeType, newFileName);
   const file = userFolder.createFile(blob);
+  
   return ContentService
     .createTextOutput(JSON.stringify({ 
       status: "success", 
       fileUrl: file.getUrl(),
-      folderUrl: userFolder.getUrl(), // ADDED THIS LINE
+      folderUrl: userFolder.getUrl(),
       message: "File uploaded successfully" 
     }))
     .setMimeType(ContentService.MimeType.JSON);

@@ -156,19 +156,31 @@ async function markStepComplete(stepNum, folderUrl = null) {
     }
 }
 
-// --- STEP 1: UPLOAD LOGIC ---
 
 const uploadBtn = document.getElementById('upload-btn');
 
 uploadBtn.addEventListener('click', async () => {
-    const resumeFile = document.getElementById('resume-upload').files[0];
-    const blsFile = document.getElementById('bls-upload').files[0];
-    const idFiles = document.getElementById('id-upload').files;
-    const certFiles = document.getElementById('certs-upload').files;
+    // Get all file inputs
+    const files = {
+        'Resume': document.getElementById('resume-upload').files[0],
+        'BLS': document.getElementById('bls-upload').files[0],
+        'Drivers License Front': document.getElementById('dl-front-upload').files[0],
+        'Drivers License Back': document.getElementById('dl-back-upload').files[0],
+        'SSN or Passport': document.getElementById('ssn-passport-upload').files[0],
+        'ACLS': document.getElementById('acls-upload').files[0],
+        'PALS': document.getElementById('pals-upload').files[0],
+        'NRP': document.getElementById('nrp-upload').files[0],
+        'Additional Certifications': document.getElementById('additional-certs-upload').files
+    };
+
     const feedback = document.getElementById('upload-feedback');
 
-    if (!resumeFile || !blsFile || idFiles.length === 0) {
-        feedback.textContent = "Please upload Resume, BLS, and Forms of ID.";
+    // Validate required fields
+    const requiredFields = ['Resume', 'BLS', 'Drivers License Front', 'Drivers License Back', 'SSN or Passport'];
+    const missingFields = requiredFields.filter(field => !files[field]);
+
+    if (missingFields.length > 0) {
+        feedback.textContent = `Please upload all required documents: ${missingFields.join(', ')}`;
         feedback.className = "feedback-msg error";
         return;
     }
@@ -178,19 +190,19 @@ uploadBtn.addEventListener('click', async () => {
     uploadBtn.disabled = true;
 
     try {
-        // Sequential Uploads to ensure folder creation consistency
-        // (Parallel uploads caused duplicate folders)
-
-        await uploadFileToGAS(resumeFile);
-        await uploadFileToGAS(blsFile);
-
-        for (let i = 0; i < idFiles.length; i++) {
-            await uploadFileToGAS(idFiles[i]);
-        }
-
         let lastUploadData = null;
-        for (let i = 0; i < certFiles.length; i++) {
-            lastUploadData = await uploadFileToGAS(certFiles[i]);
+
+        // Upload all files sequentially
+        for (const [documentType, file] of Object.entries(files)) {
+            if (documentType === 'Additional Certifications' && file.length > 0) {
+                // Handle multiple additional cert files
+                for (let i = 0; i < file.length; i++) {
+                    lastUploadData = await uploadFileToGAS(file[i], `${documentType} ${i + 1}`);
+                }
+            } else if (file) {
+                // Single file upload
+                lastUploadData = await uploadFileToGAS(file, documentType);
+            }
         }
 
         feedback.textContent = "All files uploaded successfully!";
@@ -208,7 +220,7 @@ uploadBtn.addEventListener('click', async () => {
     }
 });
 
-function uploadFileToGAS(file) {
+function uploadFileToGAS(file, documentType) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -221,7 +233,8 @@ function uploadFileToGAS(file) {
                 fileName: file.name,
                 mimeType: file.type,
                 fileData: base64Data,
-                userName: currentUser.displayName
+                userName: currentUser.displayName,
+                documentType: documentType
             };
 
             // Using fetch with no-cors might be an issue for reading response, 

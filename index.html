@@ -65,32 +65,60 @@
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </div>
                 <div class="step-content">
-                    <p class="instructions">Please upload your Resume and standard Certifications (PDF or Image files).
-                    </p>
+                    <p class="instructions">Please upload your documents. Files will be automatically renamed with the
+                        document type and upload date.</p>
+
+                    <!-- Required Documents -->
+                    <h4 style="color: var(--primary-color); margin-top: 20px; margin-bottom: 10px;">Required Documents
+                    </h4>
 
                     <div class="upload-group">
-                        <label>Resume (Required)</label>
+                        <label>Resume *</label>
                         <input type="file" id="resume-upload" accept=".pdf,.doc,.docx,.jpg,.png">
-                        <div class="file-status hidden" id="resume-status"></div>
                     </div>
 
                     <div class="upload-group">
-                        <label>BLS Certification (Required)</label>
+                        <label>BLS Certification *</label>
                         <input type="file" id="bls-upload" accept=".pdf,.doc,.docx,.jpg,.png">
-                        <div class="file-status hidden" id="bls-status"></div>
                     </div>
 
                     <div class="upload-group">
-                        <label>Two Forms of ID (Front & Back of Driver's License AND Social Security Card/Passport)
-                            *</label>
-                        <input type="file" id="id-upload" accept=".pdf,.doc,.docx,.jpg,.png" multiple>
-                        <div class="file-status hidden" id="id-status"></div>
+                        <label>Driver's License - Front *</label>
+                        <input type="file" id="dl-front-upload" accept=".pdf,.doc,.docx,.jpg,.png">
                     </div>
 
                     <div class="upload-group">
-                        <label>Additional Certs (ACLS, PALS, NRP - If you have them)</label>
-                        <input type="file" id="certs-upload" accept=".pdf,.doc,.docx,.jpg,.png" multiple>
-                        <div class="file-status hidden" id="certs-status"></div>
+                        <label>Driver's License - Back *</label>
+                        <input type="file" id="dl-back-upload" accept=".pdf,.doc,.docx,.jpg,.png">
+                    </div>
+
+                    <div class="upload-group">
+                        <label>Social Security Card or Passport *</label>
+                        <input type="file" id="ssn-passport-upload" accept=".pdf,.doc,.docx,.jpg,.png">
+                    </div>
+
+                    <!-- Optional Documents -->
+                    <h4 style="color: var(--primary-color); margin-top: 25px; margin-bottom: 10px;">Optional
+                        Certifications</h4>
+
+                    <div class="upload-group">
+                        <label>ACLS Certification</label>
+                        <input type="file" id="acls-upload" accept=".pdf,.doc,.docx,.jpg,.png">
+                    </div>
+
+                    <div class="upload-group">
+                        <label>PALS Certification</label>
+                        <input type="file" id="pals-upload" accept=".pdf,.doc,.docx,.jpg,.png">
+                    </div>
+
+                    <div class="upload-group">
+                        <label>NRP Certification</label>
+                        <input type="file" id="nrp-upload" accept=".pdf,.doc,.docx,.jpg,.png">
+                    </div>
+
+                    <div class="upload-group">
+                        <label>Additional Certifications</label>
+                        <input type="file" id="additional-certs-upload" accept=".pdf,.doc,.docx,.jpg,.png" multiple>
                     </div>
 
                     <button id="upload-btn" class="btn btn-primary">Upload Documents</button>
