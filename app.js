@@ -340,7 +340,7 @@ hshCheckbox.addEventListener('change', async (e) => {
 
 // --- POPUP LOGIC ---
 const completionModal = document.getElementById('completion-modal');
-const closeModalSpan = document.querySelector('.close-modal');
+const closeModalSpan = completionModal ? completionModal.querySelector('.close-modal') : null;
 const modalOkBtn = document.getElementById('modal-ok-btn');
 
 // Flag to prevent double notification if page is reloaded? 
@@ -510,6 +510,19 @@ if (exportBtn) {
         link.setAttribute("download", "traveler_progress_export.csv");
         document.body.appendChild(link);
         link.click();
+    });
+}
+
+// Completion Modal Events
+if (closeModalSpan) {
+    closeModalSpan.addEventListener('click', () => {
+        completionModal.classList.add('hidden');
+    });
+}
+
+if (modalOkBtn) {
+    modalOkBtn.addEventListener('click', () => {
+        completionModal.classList.add('hidden');
     });
 }
 
