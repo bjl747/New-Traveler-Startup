@@ -261,10 +261,25 @@
         <div class="modal-content">
             <span class="close-modal">&times;</span>
             <div class="modal-icon"><i class="fas fa-check-circle"></i></div>
-            <h2>All Set!</h2>
-            <p>Your Recruiter will get your profile completed ASAP and contact you to talk jobs.</p>
-            <button id="modal-ok-btn" class="primary-btn">Awesome!</button>
+            <h2>Complete</h2>
+            <p>Thank you for your submissions! Your recruiter will complete your profile and contact you with next
+                steps.</p>
+            <button id="modal-ok-btn" class="primary-btn">Complete</button>
 
+        </div>
+    </div>
+
+    <!-- Reference Details Modal -->
+    <div id="ref-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 600px; text-align: left;">
+            <span class="close-modal" id="close-ref-modal">&times;</span>
+            <h2 style="color: var(--primary-color); margin-bottom: 15px;">Reference Details</h2>
+            <div id="ref-modal-body">
+                <!-- Content injected by JS -->
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button id="close-ref-btn" class="btn btn-primary">Close</button>
+            </div>
         </div>
     </div>
 
