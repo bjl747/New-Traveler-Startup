@@ -480,3 +480,54 @@ input[type="file"] {
 .primary-btn:hover {
     background-color: var(--primary-hover);
 }
+
+/* Admin Table */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.admin-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.admin-table tr:hover {
+    background-color: #fafafa;
+}
+
+.status-check {
+    color: var(--success-color);
+    font-size: 1.2rem;
+}
+
+.status-pending {
+    color: #ccc;
+    font-size: 1.2rem;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.badge-complete {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.badge-progress {
+    background-color: #fff3cd;
+    color: #856404;
+}

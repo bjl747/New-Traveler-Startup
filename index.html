@@ -21,10 +21,14 @@
         <div class="container">
             <img src="PTH Logo.png" alt="Prime Time Healthcare Logo" class="logo">
             <div id="user-info" class="hidden">
+                <button id="admin-btn" class="btn btn-outline hidden" style="margin-right: 10px;">Admin
+                    Dashboard</button>
                 <span id="user-name"></span>
                 <button id="logout-btn" class="btn btn-outline">Sign Out</button>
             </div>
         </div>
+    </header>
+    </div>
     </header>
 
     <!-- Main Content -->
@@ -210,6 +214,43 @@
                 </div>
             </div>
 
+        </section>
+
+        <!-- Admin Section -->
+        <section id="admin-section" class="hidden fade-in">
+            <div class="dashboard-header">
+                <h2>Admin Dashboard</h2>
+                <p>Overview of all traveler progress.</p>
+                <div style="text-align: right; margin-bottom: 10px;">
+                    <button id="refresh-admin-btn" class="btn btn-outline"><i class="fas fa-sync"></i> Refresh</button>
+                    <button id="back-to-dash-btn" class="btn btn-primary">My Dashboard</button>
+                    <button id="export-csv-btn" class="btn btn-outline" style="margin-left: 10px;"><i
+                            class="fas fa-file-csv"></i> Export CSV</button>
+                </div>
+            </div>
+
+            <div class="card" style="overflow-x: auto;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Date Started</th>
+                            <th class="text-center">Docs</th>
+                            <th class="text-center">Refs</th>
+                            <th class="text-center">HSH</th>
+                            <th class="text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-table-body">
+                        <!-- Rows injected by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="admin-loading" class="text-center hidden">
+                <i class="fas fa-spinner fa-spin fa-2x"></i> <br> Loading data...
+            </div>
         </section>
 
 

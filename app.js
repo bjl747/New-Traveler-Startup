@@ -54,6 +54,11 @@ auth.onAuthStateChanged(async (user) => {
         loginSection.classList.add('hidden');
         dashboardSection.classList.remove('hidden');
 
+        // Admin Check
+        if (user.email === 'ben.layher@gmail.com' || user.email === 'testadmin@example.com') {
+            document.getElementById('admin-btn').classList.remove('hidden');
+        }
+
         // Load Progress
         await loadUserProgress();
     } else {
@@ -365,22 +370,113 @@ async function sendCompletionNotification(name) {
     }
 }
 
-if (closeModalSpan) {
-    closeModalSpan.addEventListener('click', () => {
-        completionModal.classList.add('hidden');
+const adminSection = document.getElementById('admin-section');
+const adminBtn = document.getElementById('admin-btn');
+const backToDashBtn = document.getElementById('back-to-dash-btn');
+const refreshAdminBtn = document.getElementById('refresh-admin-btn');
+
+// Admin Logic
+async function loadAdminData() {
+    const tableBody = document.getElementById('admin-table-body');
+    const loadingDiv = document.getElementById('admin-loading');
+
+    tableBody.innerHTML = '';
+    loadingDiv.classList.remove('hidden');
+
+    try {
+        const snapshot = await db.collection('travelers').orderBy('createdAt', 'desc').get();
+
+        if (snapshot.empty) {
+            tableBody.innerHTML = '<tr><td colspan="7" class="text-center">No travelers found.</td></tr>';
+            loadingDiv.classList.add('hidden');
+            return;
+        }
+
+        let html = '';
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const createdDate = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleDateString() : 'N/A';
+
+            const checkIcon = '<i class="fas fa-check-circle status-check"></i>';
+            const dashIcon = '<i class="far fa-circle status-pending"></i>';
+
+            const status = (data.step1_completed && data.step2_completed && data.step3_completed)
+                ? '<span class="status-badge badge-complete">Completed</span>'
+                : '<span class="status-badge badge-progress">In Progress</span>';
+
+            html += `
+                <tr>
+                    <td>${data.name || 'Unknown'}</td>
+                    <td>${data.email || 'N/A'}</td>
+                    <td>${createdDate}</td>
+                    <td class="text-center">${data.step1_completed ? checkIcon : dashIcon}</td>
+                    <td class="text-center">${data.step2_completed ? checkIcon : dashIcon}</td>
+                    <td class="text-center">${data.step3_completed ? checkIcon : dashIcon}</td>
+                    <td class="text-center">${status}</td>
+                </tr>
+            `;
+        });
+
+        tableBody.innerHTML = html;
+
+    } catch (error) {
+        console.error("Admin Load Error:", error);
+        tableBody.innerHTML = `<tr><td colspan="7" class="text-center" style="color:red">Error loading data: ${error.message} (Check Firestore Rules)</td></tr>`;
+    } finally {
+        loadingDiv.classList.add('hidden');
+    }
+}
+
+// Admin Event Listeners
+if (adminBtn) {
+    adminBtn.addEventListener('click', () => {
+        dashboardSection.classList.add('hidden');
+        adminSection.classList.remove('hidden');
+        loadAdminData();
     });
 }
 
-if (modalOkBtn) {
-    modalOkBtn.addEventListener('click', () => {
-        completionModal.classList.add('hidden');
+if (backToDashBtn) {
+    backToDashBtn.addEventListener('click', () => {
+        adminSection.classList.add('hidden');
+        dashboardSection.classList.remove('hidden');
     });
 }
 
-const modalResetBtn = document.getElementById('modal-reset-btn');
-if (modalResetBtn) {
-    modalResetBtn.addEventListener('click', () => {
-        auth.signOut().then(() => location.reload());
+if (refreshAdminBtn) {
+    refreshAdminBtn.addEventListener('click', loadAdminData);
+}
+
+// Export CSV (Simple implementation)
+const exportBtn = document.getElementById('export-csv-btn');
+if (exportBtn) {
+    exportBtn.addEventListener('click', async () => {
+        const snapshot = await db.collection('travelers').orderBy('createdAt', 'desc').get();
+        let csvContent = "data:text/csv;charset=utf-8,Name,Email,Date,Step1,Step2,Step3,Status\n";
+
+        snapshot.forEach(doc => {
+            const d = doc.data();
+            const date = d.createdAt ? new Date(d.createdAt.seconds * 1000).toLocaleDateString() : '';
+            const status = (d.step1_completed && d.step2_completed && d.step3_completed) ? 'Completed' : 'In Progress';
+
+            const row = [
+                `"${d.name || ''}"`,
+                `"${d.email || ''}"`,
+                date,
+                d.step1_completed ? 'Yes' : 'No',
+                d.step2_completed ? 'Yes' : 'No',
+                d.step3_completed ? 'Yes' : 'No',
+                status
+            ].join(",");
+            csvContent += row + "\r\n";
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "traveler_progress_export.csv");
+        document.body.appendChild(link);
+        link.click();
     });
 }
 
