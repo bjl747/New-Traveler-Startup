@@ -194,12 +194,17 @@ uploadBtn.addEventListener('click', async () => {
 
         // Upload all files sequentially
         for (const [documentType, file] of Object.entries(files)) {
-            if (documentType === 'Additional Certifications' && file.length > 0) {
+            if (documentType === 'Additional Certifications') {
                 // Handle multiple additional cert files
-                for (let i = 0; i < file.length; i++) {
-                    lastUploadData = await uploadFileToGAS(file[i], `${documentType} ${i + 1}`);
+                if (file && file.length > 0) {
+                    for (let i = 0; i < file.length; i++) {
+                        lastUploadData = await uploadFileToGAS(file[i], `${documentType} ${i + 1}`);
+                    }
                 }
-            } else if (file) {
+                continue; // Skip single file logic
+            }
+
+            if (file) {
                 // Single file upload
                 lastUploadData = await uploadFileToGAS(file, documentType);
             }
