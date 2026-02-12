@@ -81,6 +81,7 @@ function handleFileUpload(data) {
   // 3. Decode and Save File
   const decodedData = Utilities.base64Decode(fileData);
   const blob = Utilities.newBlob(decodedData, mimeType, fileName);
+  const file = userFolder.createFile(blob);
   return ContentService
     .createTextOutput(JSON.stringify({ 
       status: "success", 
