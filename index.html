@@ -34,8 +34,20 @@
     <!-- Main Content -->
     <main class="container">
 
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay">
+            <div class="spinner"></div>
+            <p>Loading application...</p>
+        </div>
+
+        <!-- Debug Log (Visible for troubleshooting) -->
+        <div id="debug-log"
+            style="display:none; background: #eee; padding: 10px; margin: 10px 0; border: 1px solid #ccc; max-height: 200px; overflow-y: scroll; font-family: monospace; font-size: 12px;">
+            <strong>Debug Log:</strong><br>
+        </div>
+
         <!-- Login Section -->
-        <section id="login-section" class="card fade-in">
+        <section id="login-section" class="card fade-in hidden">
             <div class="login-content">
                 <h1>Traveler Startup Dashboard</h1>
                 <p>Welcome! Please sign in to access your onboarding tasks.</p>

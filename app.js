@@ -40,9 +40,22 @@ const logoutBtn = document.getElementById('logout-btn');
 let currentUser = null;
 let userDocRef = null;
 
+// Debug Logger
+function logDebug(message) {
+    const debugDiv = document.getElementById('debug-log');
+    if (debugDiv) {
+        debugDiv.style.display = 'block';
+        const timestamp = new Date().toLocaleTimeString();
+        debugDiv.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+        console.log(`[DEBUG] ${message}`);
+    }
+}
+
 // Auth Listener
 auth.onAuthStateChanged(async (user) => {
-    console.log("Auth State Changed: " + (user ? user.email : "No User"));
+    logDebug("Auth State Changed: " + (user ? user.email : "No User"));
+
+    const loadingOverlay = document.getElementById('loading-overlay');
 
     if (user) {
         currentUser = user;
@@ -61,16 +74,28 @@ auth.onAuthStateChanged(async (user) => {
 
         // Load Progress
         await loadUserProgress();
+
+        // Hide loading
+        if (loadingOverlay) loadingOverlay.classList.add('hidden');
     } else {
+        // If initial load, we might need to wait for redirect result before showing login
+        // But getRedirectResult checks happen independently. 
+        // We will only hide loading if we are SURE we aren't waiting for a redirect?
+        // Actually, just show login. If redirect succeeds later, it will flip.
+
         currentUser = null;
         userInfo.classList.add('hidden');
-        loginSection.classList.remove('hidden');
+        // loginSection.classList.remove('hidden'); // Don't show immediately if we are waiting?
         dashboardSection.classList.add('hidden');
+
+        // We'll let the getRedirectResult finish logic handle showing the login section 
+        // if no user is found there either.
     }
 });
 
 // Login
 googleLoginBtn.addEventListener('click', () => {
+    logDebug("Starting Redirect Login...");
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithRedirect(provider);
 });
@@ -78,24 +103,31 @@ googleLoginBtn.addEventListener('click', () => {
 // Handle Redirect Result
 auth.getRedirectResult()
     .then((result) => {
+        logDebug("getRedirectResult resolved.");
         if (result.credential) {
-            // This gives you a Google Access Token. You can use it to access the Google API.
-            var token = result.credential.accessToken;
-            // ...
+            logDebug("Credential found in redirect result.");
         }
-        // The signed-in user info.
-        var user = result.user;
-        if (user) {
-            console.log("Redirect Login Success: ", user.email);
+        if (result.user) {
+            logDebug("User found in redirect result: " + result.user.email);
+            // onAuthStateChanged will handle the UI update
+        } else {
+            logDebug("No user in redirect result (null).");
+            // If no user from redirect, and no current user, show login
+            if (!currentUser) {
+                document.getElementById('login-section').classList.remove('hidden');
+                const loadingOverlay = document.getElementById('loading-overlay');
+                if (loadingOverlay) loadingOverlay.classList.add('hidden');
+            }
         }
     }).catch((error) => {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        var email = error.email;
-        var credential = error.credential;
+        logDebug("Redirect Error: " + error.message);
         console.error("Redirect Login Failed:", error);
-        alert("Login Failed: " + errorMessage);
+        alert("Login Failed: " + error.message);
+
+        // Ensure login screen is visible so they can try again
+        document.getElementById('login-section').classList.remove('hidden');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        if (loadingOverlay) loadingOverlay.classList.add('hidden');
     });
 
 // Logout
